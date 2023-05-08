@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
+# from django.contrib.auth.models import Submitter
+
 
 # Create your models here.
 
@@ -27,6 +29,15 @@ class Like(models.Model):
 class Follow(models.Model):
 
     submitter = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    follows = models.ManyToManyField(get_user_model(), related_name='followed_by')
+
+    def __str__(self):
+        return self.submitter
+    
+
+class FollowerCount(models.Model):
+    follower = models.CharField(max_length=1000)
+    submitter = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.submitter

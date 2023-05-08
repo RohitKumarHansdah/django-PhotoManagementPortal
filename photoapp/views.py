@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from .models import Photo
+from .models import Photo, Like, Follow
 
 class PhotoListView(ListView):
     model = Photo     
@@ -66,5 +66,4 @@ class PhotoDeleteView(UserIsSubmitter, DeleteView):
     template_name = 'photoapp/delete.html'
     model = Photo
     success_url = reverse_lazy('photo:list')
-
 
