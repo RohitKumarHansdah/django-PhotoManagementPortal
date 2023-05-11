@@ -1,10 +1,29 @@
-from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from .models import Photo, Like, Follow
+from .models import Photo, Like
+from django.contrib.auth.decorators import login_required
+
+
+'''Like and Follow'''
+@login_required
+def like_photo(request, photo_id):
+    photo = get_object_or_404(Photo, id=photo_id)
+    user = request.user
+    try:
+        Like.objects.get(user=user, photo=photo).delete()
+    except Like.DoesNotExist:
+        Like.objects.create(user=user, photo=photo)
+    return redirect('photo_detail', pk=photo.pk)
+
+@login_required
+def follow_user(request, user_id):
+    user_to_follow = get_object_or_404(get_user_model(), id=user_id)
+    request.user.following.add(user_to_follow)
+    return redirect('user_profile', pk=user_id)
+
 
 class PhotoListView(ListView):
     model = Photo     
