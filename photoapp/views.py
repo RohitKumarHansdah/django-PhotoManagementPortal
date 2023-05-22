@@ -10,13 +10,15 @@ from django.contrib.auth.decorators import login_required
 '''Like and Follow'''
 @login_required
 def like_photo(request, photo_id):
-    photo = get_object_or_404(Photo, id=photo_id)
+    photo = Photo.objects.get(pk=photo_id)
     user = request.user
+    print(">>>>>>>>>>>>>>", request.user)
+    print(photo)
     try:
-        Like.objects.get(user=user, photo=photo).delete()
+        Like.objects.get(user__id=user.id, photo__id=photo.id)
     except Like.DoesNotExist:
         Like.objects.create(user=user, photo=photo)
-    return redirect('photo_detail', pk=photo.pk)
+    return redirect('photo:detail', pk=photo.pk)
 
 @login_required
 def follow_user(request, user_id):
@@ -50,6 +52,13 @@ class PhotoDetailView(DetailView):
     model = Photo
     template_name = 'photoapp/detail.html'
     context_object_name = 'photo'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        ph = context['photo']
+        context["likes"] = Like.objects.filter(photo=ph.id).count()
+        return context
+    
 
 
 class PhotoCreateView(LoginRequiredMixin, CreateView):

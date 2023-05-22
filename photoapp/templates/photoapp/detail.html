@@ -28,7 +28,12 @@
       {% if user.is_authenticated and user in photo.likes.all %}
         <i class="fas fa-heart"></i> Liked <span class="badge bg-primary">{{ photo.likes.count }}</span>
       {% else %}
-        <i class="far fa-heart"></i> Like <span class="badge">{{ photo.likes.count }}</span>
+        
+        <a href="{% url 'photo:like' photo.id %}" class="btn btn-sm list-group-item list-group-item-primary"><i class="far fa-heart"></i> Like <span class="badge">{{ likes }}</span></a>
+
+
+
+
       {% endif %}
     </button>
     
@@ -37,7 +42,7 @@
       {% if user.is_authenticated and user in photo.submitter.followers.all %}
         <i class="fas fa-user-check"></i> Following
       {% else %}
-        <i class="fas fa-user-plus"></i> Follow {{ photo.submitter.username }}
+        <i class="fas fa-user-plus"></i>   {{ photo.submitter.username }}
       {% endif %}
     </button>
   </div>
